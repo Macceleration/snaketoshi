@@ -138,17 +138,21 @@ export class LocalRoomAdapter implements RoomAdapter {
       throw new Error('Room not found');
     }
 
-    if (room.status !== 'lobby') {
-      throw new Error('Cannot join room - game already started');
+    if (room.status === 'complete') {
+      throw new Error('This game has already finished');
     }
 
-    // Check if player already in room
+    // Check if player already in room (allow reconnect even in active games)
     const existingPlayer = room.players.find(p => p.id === player.id);
     if (existingPlayer) {
-      // Reconnect
       existingPlayer.isConnected = true;
       this.updateRoom(room);
       return room;
+    }
+
+    // New players can only join during lobby
+    if (room.status !== 'lobby') {
+      throw new Error('Cannot join — game already started');
     }
 
     if (room.players.length >= 6) {

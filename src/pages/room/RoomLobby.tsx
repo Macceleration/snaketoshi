@@ -44,6 +44,11 @@ export function RoomLobby() {
         navigate('/');
         return;
       }
+      // If game already started (e.g. player joined late), go straight to game
+      if (r.status === 'active') {
+        navigate(`/room/${roomId}/play`, { replace: true });
+        return;
+      }
       setRoom(r);
       setLoading(false);
     });
@@ -51,7 +56,7 @@ export function RoomLobby() {
     const unsub = adapter.subscribeToRoom(roomId, (updated) => {
       setRoom(updated);
       if (updated.status === 'active') {
-        navigate(`/room/${roomId}/play`);
+        navigate(`/room/${roomId}/play`, { replace: true });
       }
     });
 

@@ -80,7 +80,12 @@ export function JoinRoom() {
       localStorage.setItem(`room-${roomId}-player-id`, playerId);
 
       toast({ title: 'Joined!', description: `Welcome, ${name}` });
-      navigate(`/room/${roomId}`);
+      // If game already started, go directly to the game — not the lobby
+      if (room.status === 'active') {
+        navigate(`/room/${roomId}/play`);
+      } else {
+        navigate(`/room/${roomId}`);
+      }
     } catch (error) {
       toast({ title: 'Failed to join room', description: error instanceof Error ? error.message : 'Unknown error', variant: 'destructive' });
     } finally {
@@ -122,10 +127,10 @@ export function JoinRoom() {
                     Room not found or has expired
                   </p>
                 </div>
-              ) : room.status !== 'lobby' ? (
+              ) : room.status === 'complete' ? (
                 <div className="p-4 bg-amber-50 dark:bg-amber-950 border-2 border-amber-200 dark:border-amber-800 rounded-lg">
                   <p className="text-amber-700 dark:text-amber-400 text-center font-medium">
-                    This game has already started
+                    This game has already finished
                   </p>
                 </div>
               ) : (
