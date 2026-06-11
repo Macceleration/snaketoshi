@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useSeoMeta } from '@unhead/react';
 import { GameBoard } from '@/components/game/GameBoard';
 import { DiceRoller } from '@/components/game/DiceRoller';
@@ -8,9 +8,10 @@ import { SquareModal } from '@/components/game/SquareModal';
 import { PlayerSetup } from '@/components/game/PlayerSetup';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Users } from 'lucide-react';
 import { LoginArea } from '@/components/auth/LoginArea';
-import type { Player, GameState, Square } from '@/types/game';
+import type { Player, GameState, Square, Board } from '@/types/game';
 import squaresData from '@/data/squares.json';
 import { 
   createGameState, 
@@ -19,7 +20,8 @@ import {
   applyTransition,
   getCurrentPlayer 
 } from '@/lib/gameEngine';
-import { createBoardFromSquares, getBoardSquares } from '@/lib/boardAdapter';
+import { createBoardFromSquares, tileToSquare } from '@/lib/boardAdapter';
+import { loadBoardById, boardToGameBoard } from '@/lib/boards';
 
 const PLAYER_COLORS = [
   '#ef4444', // red
@@ -31,13 +33,37 @@ const PLAYER_COLORS = [
 ];
 
 export function GamePage() {
+  // boardId can come from route param (/boards/:boardId/play) or search param
+  const { boardId: paramBoardId } = useParams<{ boardId?: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const mode = searchParams.get('mode') || 'single';
   const roomId = searchParams.get('room');
+  const boardId = paramBoardId ?? searchParams.get('boardId') ?? null;
+
+  // Board state — loads custom board if boardId provided, else falls back to base
+  const [squares, setSquares] = useState<Square[]>(squaresData as Square[]);
+  const [board, setBoard] = useState<Board>(() => createBoardFromSquares(squaresData as Square[]));
+  const [boardLoading, setBoardLoading] = useState(!!boardId);
+  const [boardTitle, setBoardTitle] = useState<string>('Snaketoshi Squares');
+
+  useEffect(() => {
+    if (!boardId) return;
+    setBoardLoading(true);
+    loadBoardById(boardId).then(customBoard => {
+      if (customBoard) {
+        const gameBoard = boardToGameBoard(customBoard);
+        setBoard(gameBoard);
+        setSquares(gameBoard.tiles.map(tileToSquare));
+        setBoardTitle(customBoard.title);
+      }
+      // If not found, silently fall back to base board
+      setBoardLoading(false);
+    });
+  }, [boardId]);
 
   useSeoMeta({
-    title: `Snaketoshi Squares - ${mode === 'single' ? 'Solo' : 'Multiplayer'} Game`,
+    title: `${boardTitle} - ${mode === 'single' ? 'Solo' : 'Multiplayer'} Game`,
     description: 'Play Moksha Patam - the ancient game of consciousness',
   });
 
@@ -50,10 +76,6 @@ export function GamePage() {
   // Track last roll and transition for broadcasting
   const [lastRoll, setLastRoll] = useState<number | undefined>();
   const [lastTransition, setLastTransition] = useState<{ type: 'snake' | 'ladder'; from: number; to: number } | undefined>();
-
-  // Convert legacy squares data to board
-  const squares = squaresData as Square[];
-  const board = createBoardFromSquares(squares);
   
   const currentPlayer = gameState ? getCurrentPlayer(gameState) : undefined;
 
@@ -131,6 +153,17 @@ export function GamePage() {
     setGameState(advanceTurn(gameState));
   };
 
+  const backTarget = boardId ? `/boards/${boardId}` : '/';
+
+  if (boardLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-gray-900 dark:via-orange-950 dark:to-gray-900 p-8">
+        <Skeleton className="h-8 w-32 mb-6" />
+        <Skeleton className="h-64 w-full max-w-2xl mx-auto" />
+      </div>
+    );
+  }
+
   if (!gameStarted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-gray-900 dark:via-orange-950 dark:to-gray-900 p-4">
@@ -138,12 +171,14 @@ export function GamePage() {
           <Button
             variant="ghost"
             className="mb-6"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(backTarget)}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            {boardId ? 'Back to Board' : 'Back to Home'}
           </Button>
-          
+          {boardId && boardTitle !== 'Snaketoshi Squares' && (
+            <p className="text-sm text-center text-gray-500 mb-4 -mt-2">Playing: <strong>{boardTitle}</strong></p>
+          )}
           <PlayerSetup
             mode={mode}
             roomId={roomId}
@@ -165,7 +200,7 @@ export function GamePage() {
             variant="ghost"
             onClick={() => {
               if (confirm('Leave this game? Progress will be lost.')) {
-                navigate('/');
+                navigate(backTarget);
               }
             }}
           >
