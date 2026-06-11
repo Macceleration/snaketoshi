@@ -1,6 +1,6 @@
 import type { RoomAdapter, GameRoom, RoomPlayer, RoomSubscriptionCallback } from '@/types/room';
-import type { GameState, Player } from '@/types/game';
-import { createGameState, applyRoll, advanceTurn } from './gameEngine';
+import type { Player } from '@/types/game';
+import { createGameState, applyRoll } from './gameEngine';
 import { createBoardFromSquares } from './boardAdapter';
 import squaresData from '@/data/squares.json';
 
@@ -198,7 +198,21 @@ export class LocalRoomAdapter implements RoomAdapter {
     this.updateRoom(room);
   }
 
-  async startRoom(roomId: string): Promise<GameRoom> {
+  async joinRoomByCode(
+    code: string,
+    player: Omit<RoomPlayer, 'isHost' | 'isConnected' | 'joinedAt'>,
+  ): Promise<GameRoom> {
+    const room = await this.getRoomByCode(code);
+    if (!room) throw new Error('Room not found');
+    return this.joinRoom(room.id, player);
+  }
+
+  async startRoom(roomId: string, hostPlayerId?: string): Promise<GameRoom> {
+    // If hostPlayerId supplied and room has a different host, reject
+    const roomCheck = this.rooms.get(roomId);
+    if (roomCheck && hostPlayerId && roomCheck.hostId !== hostPlayerId) {
+      throw new Error('Only the host can start the game');
+    }
     const room = this.rooms.get(roomId);
     if (!room) {
       throw new Error('Room not found');
@@ -384,17 +398,6 @@ export class LocalRoomAdapter implements RoomAdapter {
   }
 }
 
-/**
- * Singleton instance
- */
-let adapterInstance: RoomAdapter | null = null;
-
-/**
- * Get the room adapter instance
- */
-export function getRoomAdapter(): RoomAdapter {
-  if (!adapterInstance) {
-    adapterInstance = new LocalRoomAdapter();
-  }
-  return adapterInstance;
-}
+// NOTE: Do not add a getRoomAdapter() singleton here.
+// Use src/lib/roomAdapterFactory.ts instead, which selects the
+// correct adapter based on VITE_MULTIPLAYER_MODE.

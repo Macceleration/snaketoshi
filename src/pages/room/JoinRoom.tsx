@@ -6,18 +6,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, LogIn, User } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { getRoomAdapter } from '@/lib/roomAdapter';
+import { getRoomAdapter } from '@/lib/roomAdapterFactory';
+import type { GameRoom } from '@/types/room';
 
 const PLAYER_COLORS = [
-  '#ef4444', // red
-  '#3b82f6', // blue
-  '#10b981', // green
-  '#f59e0b', // amber
-  '#8b5cf6', // violet
-  '#ec4899', // pink
+  '#ef4444',
+  '#3b82f6',
+  '#10b981',
+  '#f59e0b',
+  '#8b5cf6',
+  '#ec4899',
 ];
 
 export function JoinRoom() {
@@ -25,11 +27,12 @@ export function JoinRoom() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, metadata } = useCurrentUser();
-  
+
+  const [room, setRoom] = useState<GameRoom | null>(null);
+  const [loadingRoom, setLoadingRoom] = useState(true);
   const [playerName, setPlayerName] = useState('');
   const [useNostrProfile, setUseNostrProfile] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
-  const [roomExists, setRoomExists] = useState<boolean | null>(null);
 
   useSeoMeta({
     title: 'Join Room - Snaketoshi Squares',
@@ -37,54 +40,36 @@ export function JoinRoom() {
   });
 
   useEffect(() => {
-    // Check if room exists
-    if (roomId) {
-      const adapter = getRoomAdapter();
-      adapter.getRoom(roomId).then(room => {
-        setRoomExists(room !== null);
-        if (!room) {
-          toast({
-            title: 'Room not found',
-            description: 'This room may have expired or the code is invalid',
-            variant: 'destructive',
-          });
-        }
-      });
-    }
+    if (!roomId) return;
+    const adapter = getRoomAdapter();
+    adapter.getRoom(roomId).then(r => {
+      setRoom(r);
+      setLoadingRoom(false);
+      if (!r) {
+        toast({ title: 'Room not found', description: 'This room may have expired or the code is invalid', variant: 'destructive' });
+      }
+    });
   }, [roomId, toast]);
 
-  const displayName = useNostrProfile && metadata 
+  const displayName = useNostrProfile && metadata
     ? (metadata.display_name || metadata.name || 'Anon')
     : playerName;
 
   const handleJoin = async () => {
-    if (!roomId) return;
+    if (!roomId || !room) return;
 
     const name = displayName.trim();
     if (!name) {
-      toast({
-        title: 'Name required',
-        description: 'Please enter your name or use your Nostr profile',
-        variant: 'destructive',
-      });
+      toast({ title: 'Name required', description: 'Please enter your name or use your Nostr profile', variant: 'destructive' });
       return;
     }
 
     setIsJoining(true);
-
     try {
-      const adapter = getRoomAdapter();
-      const room = await adapter.getRoom(roomId);
-      
-      if (!room) {
-        throw new Error('Room not found');
-      }
-
-      // Assign color based on player count
       const colorIndex = room.players.length % PLAYER_COLORS.length;
-      
       const playerId = `player-${Date.now()}`;
-      
+
+      const adapter = getRoomAdapter();
       await adapter.joinRoom(roomId, {
         id: playerId,
         name,
@@ -92,21 +77,12 @@ export function JoinRoom() {
         nostrPubkey: useNostrProfile ? user?.pubkey : undefined,
       });
 
-      // Store player ID for reconnection
       localStorage.setItem(`room-${roomId}-player-id`, playerId);
 
-      toast({
-        title: 'Joined room!',
-        description: `Welcome, ${name}`,
-      });
-
+      toast({ title: 'Joined!', description: `Welcome, ${name}` });
       navigate(`/room/${roomId}`);
     } catch (error) {
-      toast({
-        title: 'Failed to join room',
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: 'destructive',
-      });
+      toast({ title: 'Failed to join room', description: error instanceof Error ? error.message : 'Unknown error', variant: 'destructive' });
     } finally {
       setIsJoining(false);
     }
@@ -115,11 +91,7 @@ export function JoinRoom() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-gray-900 dark:via-orange-950 dark:to-gray-900">
       <div className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/')}
-          className="mb-6"
-        >
+        <Button variant="ghost" onClick={() => navigate('/')} className="mb-6">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
         </Button>
@@ -139,16 +111,33 @@ export function JoinRoom() {
             </CardHeader>
 
             <CardContent className="space-y-6">
-              {roomExists === false && (
+              {loadingRoom ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              ) : room === null ? (
                 <div className="p-4 bg-red-50 dark:bg-red-950 border-2 border-red-200 dark:border-red-800 rounded-lg">
                   <p className="text-red-700 dark:text-red-400 text-center font-medium">
                     Room not found or has expired
                   </p>
                 </div>
-              )}
-
-              {roomExists && (
+              ) : room.status !== 'lobby' ? (
+                <div className="p-4 bg-amber-50 dark:bg-amber-950 border-2 border-amber-200 dark:border-amber-800 rounded-lg">
+                  <p className="text-amber-700 dark:text-amber-400 text-center font-medium">
+                    This game has already started
+                  </p>
+                </div>
+              ) : (
                 <>
+                  {/* Room info banner */}
+                  <div className="p-3 bg-purple-50 dark:bg-purple-950 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <p className="text-sm text-purple-700 dark:text-purple-300">
+                      Joining room <span className="font-mono font-bold">{room.code}</span>
+                      {' '} · {room.players.length} player{room.players.length !== 1 ? 's' : ''} waiting
+                    </p>
+                  </div>
+
                   {/* Nostr Profile Option */}
                   {user && (
                     <div className="p-4 bg-violet-50 dark:bg-violet-950 rounded-lg border-2 border-violet-200 dark:border-violet-800">
@@ -159,10 +148,7 @@ export function JoinRoom() {
                           onCheckedChange={(checked) => setUseNostrProfile(checked as boolean)}
                         />
                         <div className="flex-1">
-                          <Label
-                            htmlFor="use-nostr"
-                            className="text-sm font-semibold cursor-pointer flex items-center gap-2"
-                          >
+                          <Label htmlFor="use-nostr" className="text-sm font-semibold cursor-pointer flex items-center gap-2">
                             <User className="w-4 h-4" />
                             Use my Nostr profile
                           </Label>
@@ -178,9 +164,7 @@ export function JoinRoom() {
 
                   {/* Player Name */}
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-base font-semibold">
-                      Your Name
-                    </Label>
+                    <Label htmlFor="name" className="text-base font-semibold">Your Name</Label>
                     <Input
                       id="name"
                       value={playerName}
@@ -188,10 +172,11 @@ export function JoinRoom() {
                       placeholder="Enter your name"
                       disabled={useNostrProfile}
                       className="text-lg"
+                      autoFocus={!useNostrProfile}
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleJoin(); }}
                     />
                   </div>
 
-                  {/* Join Button */}
                   <Button
                     onClick={handleJoin}
                     disabled={isJoining || !displayName.trim()}

@@ -17,8 +17,17 @@ interface SquareModalProps {
   showVideo: boolean;
   onShowVideo: () => void;
   onSkipVideo: () => void;
+  /**
+   * onClose — local gameplay: advances turn directly.
+   * Room gameplay: use onContinueTurn instead.
+   */
   onClose: () => void;
-  // Optional props for broadcasting
+  /**
+   * onContinueTurn — when provided (room mode), Continue / Skip call this
+   * instead of onClose so that continueTurn() is invoked on the adapter.
+   */
+  onContinueTurn?: () => void;
+  // Context for Nostr broadcasting (optional)
   currentPlayer?: Player;
   roll?: number;
   transition?: {
@@ -35,8 +44,8 @@ export function SquareModal({
   isOpen,
   showVideo,
   onShowVideo,
-  onSkipVideo,
   onClose,
+  onContinueTurn,
   currentPlayer,
   roll,
   transition,
@@ -57,64 +66,47 @@ export function SquareModal({
   const { toast } = useToast();
   const [isBroadcasting, setIsBroadcasting] = useState(false);
 
+  /** The action that advances the game (room or local) */
+  const handleContinue = () => {
+    if (onContinueTurn) {
+      onContinueTurn();
+    } else {
+      onClose();
+    }
+  };
+
   const handleBroadcast = () => {
     if (!user) {
-      toast({
-        title: 'Login required',
-        description: 'Please login with Nostr to broadcast your plays',
-        variant: 'destructive',
-      });
+      toast({ title: 'Login required', description: 'Please login with Nostr to broadcast your plays', variant: 'destructive' });
       return;
     }
-
     if (!currentPlayer || !roll || !board) {
-      toast({
-        title: 'Cannot broadcast',
-        description: 'Missing game state information',
-        variant: 'destructive',
-      });
+      toast({ title: 'Cannot broadcast', description: 'Missing game state information', variant: 'destructive' });
       return;
     }
 
     setIsBroadcasting(true);
-
     const tile = squareToTile(square);
-    const eventTemplate = createPlayBroadcastEvent({
-      player: currentPlayer,
-      tile,
-      roll,
-      transition,
-      board,
-      roomId,
-    });
+    const eventTemplate = createPlayBroadcastEvent({ player: currentPlayer, tile, roll, transition, board, roomId });
 
     publish(eventTemplate, {
       onSuccess: () => {
-        toast({
-          title: 'Broadcasted! 🐸',
-          description: 'Your play has been shared to Nostr',
-        });
+        toast({ title: 'Broadcasted! 🐸', description: 'Your play has been shared to Nostr' });
         setIsBroadcasting(false);
       },
       onError: (error) => {
-        toast({
-          title: 'Broadcast failed',
-          description: error.message || 'Could not publish to Nostr',
-          variant: 'destructive',
-        });
+        toast({ title: 'Broadcast failed', description: error.message || 'Could not publish to Nostr', variant: 'destructive' });
         setIsBroadcasting(false);
       },
     });
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleContinue}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl md:text-3xl flex items-center gap-3 flex-wrap">
-            <span className="text-orange-600 dark:text-orange-400 font-bold">
-              {square.number}
-            </span>
+            <span className="text-orange-600 dark:text-orange-400 font-bold">{square.number}</span>
             <span>{square.title}</span>
             {square.marketCycleLabel && (
               <span className="text-sm font-normal px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full">
@@ -127,12 +119,8 @@ export function SquareModal({
         <div className="space-y-4 py-4">
           {/* Sanskrit Name */}
           <div className="text-center">
-            <div className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-              Sanskrit
-            </div>
-            <div className="text-2xl font-serif text-purple-700 dark:text-purple-400">
-              {square.sanskrit}
-            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Sanskrit</div>
+            <div className="text-2xl font-serif text-purple-700 dark:text-purple-400">{square.sanskrit}</div>
           </div>
 
           {/* Snake/Ladder Alert */}
@@ -161,23 +149,15 @@ export function SquareModal({
 
           {/* Meaning */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
-              Meaning
-            </h3>
-            <p className="text-gray-800 dark:text-gray-200 leading-relaxed">
-              {square.meaning}
-            </p>
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Meaning</h3>
+            <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{square.meaning}</p>
           </div>
 
-          {/* Reflection Prompt */}
+          {/* Reflection */}
           <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border-2 border-amber-200 dark:border-amber-800">
             <CardContent className="py-4">
-              <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-300 mb-2 uppercase tracking-wide">
-                Reflection
-              </h3>
-              <p className="text-amber-950 dark:text-amber-100 leading-relaxed italic">
-                "{square.reflection}"
-              </p>
+              <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-300 mb-2 uppercase tracking-wide">Reflection</h3>
+              <p className="text-amber-950 dark:text-amber-100 leading-relaxed italic">"{square.reflection}"</p>
             </CardContent>
           </Card>
 
@@ -185,23 +165,17 @@ export function SquareModal({
           {hasInterfaithReferences && (
             <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-2 border-blue-200 dark:border-blue-800">
               <CardContent className="py-4">
-                <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-3 uppercase tracking-wide">
-                  Interfaith Echoes
-                </h3>
+                <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-3 uppercase tracking-wide">Interfaith Echoes</h3>
                 <div className="space-y-3">
-                  {square.interfaithReferences!.map((ref, index) => (
-                    <div key={index} className="space-y-1">
+                  {square.interfaithReferences!.map((ref, i) => (
+                    <div key={i} className="space-y-1">
                       <div className="flex items-center gap-2 text-sm font-medium text-blue-800 dark:text-blue-400">
                         <span>{ref.tradition}</span>
                         <span className="text-blue-400 dark:text-blue-600">•</span>
                         <span className="font-mono text-xs">{ref.reference}</span>
                       </div>
-                      <p className="text-sm text-blue-900 dark:text-blue-200 italic">
-                        "{ref.quote}"
-                      </p>
-                      <p className="text-sm text-blue-800 dark:text-blue-300">
-                        {ref.commentary}
-                      </p>
+                      <p className="text-sm text-blue-900 dark:text-blue-200 italic">"{ref.quote}"</p>
+                      <p className="text-sm text-blue-800 dark:text-blue-300">{ref.commentary}</p>
                     </div>
                   ))}
                 </div>
@@ -217,18 +191,13 @@ export function SquareModal({
                   Meme Encounter{square.memeEncounters!.length > 1 ? 's' : ''}
                 </h3>
                 <div className="space-y-4">
-                  {square.memeEncounters!.map((meme, index) => (
-                    <div key={index} className="space-y-2">
-                      {/* Meme placeholder visual */}
+                  {square.memeEncounters!.map((meme, i) => (
+                    <div key={i} className="space-y-2">
                       <div className="bg-gradient-to-br from-green-100 to-emerald-200 dark:from-green-900 dark:to-emerald-900 border-2 border-green-300 dark:border-green-700 rounded-lg p-6 text-center">
                         <div className="text-4xl mb-2">🐸</div>
-                        <p className="text-xs text-green-700 dark:text-green-400 italic">
-                          {meme.prompt}
-                        </p>
+                        <p className="text-xs text-green-700 dark:text-green-400 italic">{meme.prompt}</p>
                       </div>
-                      <p className="text-sm font-bold text-green-900 dark:text-green-200 text-center">
-                        "{meme.caption}"
-                      </p>
+                      <p className="text-sm font-bold text-green-900 dark:text-green-200 text-center">"{meme.caption}"</p>
                     </div>
                   ))}
                 </div>
@@ -250,7 +219,7 @@ export function SquareModal({
                     Play Video
                   </Button>
                   <Button
-                    onClick={onClose}
+                    onClick={handleContinue}
                     variant="outline"
                     className="flex-1"
                     size="lg"
@@ -274,11 +243,7 @@ export function SquareModal({
                       />
                     </div>
                   )}
-                  <Button
-                    onClick={onClose}
-                    className="w-full"
-                    size="lg"
-                  >
+                  <Button onClick={handleContinue} className="w-full" size="lg">
                     Continue
                   </Button>
                 </div>
@@ -286,7 +251,7 @@ export function SquareModal({
             </div>
           )}
 
-          {/* Broadcast Button */}
+          {/* Nostr Broadcast */}
           <Button
             onClick={handleBroadcast}
             disabled={!user || isBroadcasting || isPending}
@@ -295,17 +260,17 @@ export function SquareModal({
             size="lg"
           >
             <Radio className="w-5 h-5 mr-2" />
-            {!user 
-              ? 'Login with Nostr to broadcast' 
+            {!user
+              ? 'Login with Nostr to broadcast'
               : isBroadcasting || isPending
-              ? 'Broadcasting...'
+              ? 'Broadcasting…'
               : 'Broadcast this play'}
           </Button>
 
-          {/* Continue Button (if no video) */}
+          {/* Continue Button (no video) */}
           {!hasVideo && (
             <Button
-              onClick={onClose}
+              onClick={handleContinue}
               className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600"
               size="lg"
             >

@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/useToast';
-import { getRoomAdapter } from '@/lib/roomAdapter';
+import { getRoomAdapter } from '@/lib/roomAdapterFactory';
 
 interface JoinRoomDialogProps {
   isOpen: boolean;

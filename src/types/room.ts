@@ -79,6 +79,11 @@ export interface RoomAdapter {
   joinRoom(roomId: string, player: Omit<RoomPlayer, 'isHost' | 'isConnected' | 'joinedAt'>): Promise<GameRoom>;
 
   /**
+   * Join room by code (convenience method)
+   */
+  joinRoomByCode(code: string, player: Omit<RoomPlayer, 'isHost' | 'isConnected' | 'joinedAt'>): Promise<GameRoom>;
+
+  /**
    * Leave a room
    */
   leaveRoom(roomId: string, playerId: string): Promise<void>;

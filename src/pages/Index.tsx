@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useSeoMeta } from '@unhead/react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, Users, Play, LogIn, Map } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dices, Users, Play, Map } from 'lucide-react';
 import { LoginArea } from '@/components/auth/LoginArea';
 import { JoinRoomDialog } from '@/components/room/JoinRoomDialog';
+import { isNostrMultiplayer } from '@/config/multiplayer';
 
 const Index = () => {
   const [joinDialogOpen, setJoinDialogOpen] = useState(false);
+  const nostrMode = isNostrMultiplayer();
   useSeoMeta({
     title: 'Snaketoshi Squares - The Meming of Life',
     description: 'Life has ups and downs, like the Bitcoin market: bubbles, busts, snakes, ladders, lessons, and awakenings. Maybe the chaos has a board.',
@@ -90,9 +91,15 @@ const Index = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Start a game and share the link
                 </p>
-                <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
-                  (Same-browser only for now)
-                </p>
+                {nostrMode ? (
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                    🌐 Cross-device multiplayer
+                  </p>
+                ) : (
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                    Same-browser only (local mode)
+                  </p>
+                )}
               </CardContent>
             </Card>
           </Link>
@@ -113,9 +120,15 @@ const Index = () => {
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Enter a room code to join friends
               </p>
-              <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
-                (Same-browser only for now)
-              </p>
+              {nostrMode ? (
+                <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                  🌐 Join from any device
+                </p>
+              ) : (
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                  Same-browser only (local mode)
+                </p>
+              )}
             </CardContent>
           </Card>
 
