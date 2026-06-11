@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { useSeoMeta } from '@unhead/react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dices, Users, Play, LogIn, Map } from 'lucide-react';
 import { LoginArea } from '@/components/auth/LoginArea';
+import { JoinRoomDialog } from '@/components/room/JoinRoomDialog';
 
 const Index = () => {
+  const [joinDialogOpen, setJoinDialogOpen] = useState(false);
   useSeoMeta({
     title: 'Snaketoshi Squares - The Meming of Life',
     description: 'Life has ups and downs, like the Bitcoin market: bubbles, busts, snakes, ladders, lessons, and awakenings. Maybe the chaos has a board.',
@@ -54,7 +57,7 @@ const Index = () => {
         </div>
 
         {/* Action Buttons Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto mb-12">
+        <div className="grid sm:grid-cols-2 gap-4 max-w-4xl mx-auto mb-12">
           <Link to="/play/local?mode=single" className="block">
             <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-orange-400 cursor-pointer h-full">
               <CardHeader className="pb-3">
@@ -91,7 +94,10 @@ const Index = () => {
             </Card>
           </Link>
 
-          <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-400 cursor-pointer h-full opacity-75">
+          <Card 
+            className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-400 cursor-pointer h-full"
+            onClick={() => setJoinDialogOpen(true)}
+          >
             <CardHeader className="pb-3">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900 dark:to-cyan-900 rounded-lg group-hover:scale-110 transition-transform">
@@ -102,28 +108,12 @@ const Index = () => {
             </CardHeader>
             <CardContent className="pt-0">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Enter a room code to join friends (coming soon)
+                Enter a room code to join friends
               </p>
             </CardContent>
           </Card>
 
-          <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-violet-400 cursor-pointer h-full opacity-75">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900 dark:to-purple-900 rounded-lg group-hover:scale-110 transition-transform">
-                  <LogIn className="w-5 h-5 text-violet-600 dark:text-violet-400" />
-                </div>
-                <CardTitle className="text-lg">Login with Nostr</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Broadcast your plays, save progress (coming soon)
-              </p>
-            </CardContent>
-          </Card>
-
-          <Link to="/board" className="block sm:col-span-2 lg:col-span-1">
+          <Link to="/board" className="block">
             <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-emerald-400 cursor-pointer h-full">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
@@ -169,6 +159,12 @@ const Index = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Join Room Dialog */}
+      <JoinRoomDialog 
+        isOpen={joinDialogOpen} 
+        onClose={() => setJoinDialogOpen(false)} 
+      />
     </div>
   );
 };
