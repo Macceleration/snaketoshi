@@ -12,6 +12,7 @@ import {
   loadRoomKeypair,
 } from './roomKeypair';
 import type { RoomKeypair } from './roomKeypair';
+import { hexToBytes } from './hex';
 import {
   serializeRoom,
   deserializeRoom,
@@ -87,16 +88,12 @@ export class NostrRoomAdapter implements RoomAdapter {
 
       // Extract and cache the room secret from the event tag
       const secretHex = extractRoomSecret(ev);
-      if (secretHex) {
-        // Only cache if we don't already have one (avoids overwriting host's stored copy)
-        const existing = loadRoomKeypair(roomId);
-        if (!existing) {
-          // Build keypair from the extracted secret
-          const { getPublicKey } = await import('nostr-tools');
-          const sk = Uint8Array.from(Buffer.from(secretHex, 'hex'));
-          const pk = getPublicKey(sk);
-          storeRoomKeypair(roomId, { secretKeyHex: secretHex, publicKeyHex: pk });
-        }
+      if (secretHex && !loadRoomKeypair(roomId)) {
+        // Build keypair from the extracted secret and cache locally
+        const { getPublicKey } = await import('nostr-tools');
+        const sk = hexToBytes(secretHex);
+        const pk = getPublicKey(sk);
+        storeRoomKeypair(roomId, { secretKeyHex: secretHex, publicKeyHex: pk });
       }
 
       const keypair = loadRoomKeypair(roomId);
@@ -346,7 +343,7 @@ export class NostrRoomAdapter implements RoomAdapter {
       const secretHex = extractRoomSecret(ev);
       if (secretHex && !loadRoomKeypair(room.id)) {
         const { getPublicKey } = await import('nostr-tools');
-        const sk = Uint8Array.from(Buffer.from(secretHex, 'hex'));
+        const sk = hexToBytes(secretHex);
         const pk = getPublicKey(sk);
         storeRoomKeypair(room.id, { secretKeyHex: secretHex, publicKeyHex: pk });
       }
@@ -384,7 +381,7 @@ export class NostrRoomAdapter implements RoomAdapter {
             if (secretHex && !loadRoomKeypair(room.id)) {
               try {
                 const { getPublicKey } = await import('nostr-tools');
-                const sk = Uint8Array.from(Buffer.from(secretHex, 'hex'));
+                const sk = hexToBytes(secretHex);
                 const pk = getPublicKey(sk);
                 storeRoomKeypair(room.id, { secretKeyHex: secretHex, publicKeyHex: pk });
               } catch { /* ignore */ }

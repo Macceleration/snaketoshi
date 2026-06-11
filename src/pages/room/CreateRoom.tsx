@@ -98,16 +98,16 @@ export function CreateRoom() {
               {nostrMode ? (
                 <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
                   <p className="text-sm font-medium text-green-800 dark:text-green-300">
-                    🌐 Cross-device multiplayer enabled
+                    🌐 Cross-device rooms sync through public relays
                   </p>
                   <p className="text-xs text-green-700 dark:text-green-400 mt-1">
-                    Friends can join from any device using the room code or link.
+                    No Nostr account required — friends can join from any device using the room code or link.
                   </p>
                 </div>
               ) : (
                 <div className="p-3 bg-amber-50 dark:bg-amber-950 rounded-lg border border-amber-300 dark:border-amber-700">
                   <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-                    ⚠️ Local alpha mode
+                    ⚠️ Local mode
                   </p>
                   <p className="text-xs text-amber-800 dark:text-amber-300">
                     Rooms only work across tabs in this browser. Set{' '}

@@ -87,7 +87,7 @@ const Index = () => {
                 </p>
                 {nostrMode ? (
                   <p className="text-xs text-green-600 dark:text-green-400 mt-2">
-                    🌐 Cross-device multiplayer
+                    🌐 No Nostr account required
                   </p>
                 ) : (
                   <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
@@ -116,7 +116,7 @@ const Index = () => {
               </p>
               {nostrMode ? (
                 <p className="text-xs text-green-600 dark:text-green-400 mt-2">
-                  🌐 Join from any device
+                  🌐 Join from any device, no account needed
                 </p>
               ) : (
                 <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">

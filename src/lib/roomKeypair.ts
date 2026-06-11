@@ -1,7 +1,7 @@
-import { generateSecretKey, getPublicKey } from 'nostr-tools';
-import { finalizeEvent } from 'nostr-tools';
+import { generateSecretKey, getPublicKey, finalizeEvent } from 'nostr-tools';
 import type { EventTemplate } from 'nostr-tools';
 import type { NostrEvent } from '@nostrify/nostrify';
+import { bytesToHex, hexToBytes } from './hex';
 
 export interface RoomKeypair {
   secretKeyHex: string;   // hex-encoded secret key stored in localStorage
@@ -13,7 +13,7 @@ export function generateRoomKeypair(): RoomKeypair {
   const sk = generateSecretKey();
   const pk = getPublicKey(sk);
   return {
-    secretKeyHex: Buffer.from(sk).toString('hex'),
+    secretKeyHex: bytesToHex(sk),
     publicKeyHex: pk,
   };
 }
@@ -23,7 +23,7 @@ export function signWithRoomKeypair(
   template: EventTemplate,
   keypair: RoomKeypair,
 ): NostrEvent {
-  const sk = Uint8Array.from(Buffer.from(keypair.secretKeyHex, 'hex'));
+  const sk = hexToBytes(keypair.secretKeyHex);
   return finalizeEvent(template, sk) as NostrEvent;
 }
 
