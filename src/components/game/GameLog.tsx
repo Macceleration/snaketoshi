@@ -13,17 +13,24 @@ export function GameLog({ log, players }: GameLogProps) {
     return players.find(p => p.id === playerId)?.color || '#gray';
   };
 
+  const getActionVerb = (entry: GameLogType): string => {
+    if (entry.hasSnake) return 'got humbled by';
+    if (entry.hasLadder) return 'climbed';
+    if (entry.toSquare === 72) return 'reached';
+    return 'encountered';
+  };
+
   return (
     <Card className="border-2">
       <CardHeader>
-        <CardTitle className="text-lg">Game Log</CardTitle>
+        <CardTitle className="text-lg">Journey Log</CardTitle>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[300px] pr-4">
           {log.length === 0 ? (
             <div className="text-center text-gray-500 dark:text-gray-400 py-8">
               <Dices className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Roll the dice to begin</p>
+              <p className="text-sm">Roll to begin the journey</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -46,9 +53,11 @@ export function GameLog({ log, players }: GameLogProps) {
                   </div>
                   
                   <div className="text-sm text-gray-700 dark:text-gray-300">
-                    <span>Square {entry.fromSquare}</span>
-                    <span className="mx-1">→</span>
-                    <span className="font-bold">{entry.toSquare}</span>
+                    <span className="opacity-75">from {entry.fromSquare}</span>
+                    <span className="mx-1.5 font-medium">{getActionVerb(entry)}</span>
+                    <span className="font-bold text-orange-700 dark:text-orange-400">
+                      {entry.toSquare}
+                    </span>
                     
                     {entry.finalSquare !== undefined && entry.finalSquare !== entry.toSquare && (
                       <>

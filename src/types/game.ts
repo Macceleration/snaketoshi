@@ -8,6 +8,25 @@ export interface Square {
   video: string | null;
   snake: number | null;
   ladder: number | null;
+  tags?: string[];
+  interfaithReferences?: InterfaithReference[];
+  memeEncounters?: MemeEncounter[];
+  marketCycleLabel?: string;
+}
+
+// Interfaith reference
+export interface InterfaithReference {
+  tradition: string;
+  reference: string;
+  quote: string;
+  commentary: string;
+}
+
+// Meme encounter
+export interface MemeEncounter {
+  caption: string;
+  prompt: string;
+  imageUrl?: string; // Optional: for when actual meme is generated
 }
 
 // Future-ready Tile type (normalized naming)
@@ -20,6 +39,10 @@ export interface Tile {
   videoUrl: string | null;
   snakeTo: number | null;
   ladderTo: number | null;
+  tags?: string[]; // e.g. ["wisdom", "transformation", "shadow work"]
+  interfaithReferences?: InterfaithReference[];
+  memeEncounters?: MemeEncounter[];
+  marketCycleLabel?: string; // e.g. "Bubble Peak", "Capitulation", "Accumulation"
 }
 
 // Board represents the complete game board

@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Play, SkipForward, ArrowDown, ArrowUp } from 'lucide-react';
+import { Play, SkipForward, ArrowDown, ArrowUp, Radio } from 'lucide-react';
 import type { Square } from '@/types/game';
 import { extractYouTubeId, createEmbedUrl } from '@/lib/youtube';
 
@@ -25,19 +25,29 @@ export function SquareModal({
   const hasVideo = square.video !== null;
   const hasSnake = square.snake !== null;
   const hasLadder = square.ladder !== null;
+  const hasInterfaithReferences = square.interfaithReferences && square.interfaithReferences.length > 0;
+  const hasMemeEncounters = square.memeEncounters && square.memeEncounters.length > 0;
 
   const videoId = hasVideo && square.video ? extractYouTubeId(square.video) : null;
   const embedUrl = videoId ? createEmbedUrl(videoId, true) : null;
+
+  // TODO: Get from user context when Nostr login is implemented
+  const isLoggedIn = false;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl md:text-3xl flex items-center gap-3">
+          <DialogTitle className="text-2xl md:text-3xl flex items-center gap-3 flex-wrap">
             <span className="text-orange-600 dark:text-orange-400 font-bold">
               {square.number}
             </span>
             <span>{square.title}</span>
+            {square.marketCycleLabel && (
+              <span className="text-sm font-normal px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full">
+                {square.marketCycleLabel}
+              </span>
+            )}
           </DialogTitle>
         </DialogHeader>
 
@@ -98,6 +108,61 @@ export function SquareModal({
             </CardContent>
           </Card>
 
+          {/* Interfaith Echoes */}
+          {hasInterfaithReferences && (
+            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-2 border-blue-200 dark:border-blue-800">
+              <CardContent className="py-4">
+                <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-3 uppercase tracking-wide">
+                  Interfaith Echoes
+                </h3>
+                <div className="space-y-3">
+                  {square.interfaithReferences!.map((ref, index) => (
+                    <div key={index} className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm font-medium text-blue-800 dark:text-blue-400">
+                        <span>{ref.tradition}</span>
+                        <span className="text-blue-400 dark:text-blue-600">•</span>
+                        <span className="font-mono text-xs">{ref.reference}</span>
+                      </div>
+                      <p className="text-sm text-blue-900 dark:text-blue-200 italic">
+                        "{ref.quote}"
+                      </p>
+                      <p className="text-sm text-blue-800 dark:text-blue-300">
+                        {ref.commentary}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Meme Encounters */}
+          {hasMemeEncounters && (
+            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-2 border-green-200 dark:border-green-800">
+              <CardContent className="py-4">
+                <h3 className="text-sm font-semibold text-green-900 dark:text-green-300 mb-3 uppercase tracking-wide">
+                  Meme Encounter{square.memeEncounters!.length > 1 ? 's' : ''}
+                </h3>
+                <div className="space-y-4">
+                  {square.memeEncounters!.map((meme, index) => (
+                    <div key={index} className="space-y-2">
+                      {/* Meme placeholder visual */}
+                      <div className="bg-gradient-to-br from-green-100 to-emerald-200 dark:from-green-900 dark:to-emerald-900 border-2 border-green-300 dark:border-green-700 rounded-lg p-6 text-center">
+                        <div className="text-4xl mb-2">🐸</div>
+                        <p className="text-xs text-green-700 dark:text-green-400 italic">
+                          {meme.prompt}
+                        </p>
+                      </div>
+                      <p className="text-sm font-bold text-green-900 dark:text-green-200 text-center">
+                        "{meme.caption}"
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Video Section */}
           {hasVideo && (
             <div className="space-y-3">
@@ -147,6 +212,17 @@ export function SquareModal({
               )}
             </div>
           )}
+
+          {/* Broadcast Button */}
+          <Button
+            disabled={!isLoggedIn}
+            variant="outline"
+            className="w-full"
+            size="lg"
+          >
+            <Radio className="w-5 h-5 mr-2" />
+            {isLoggedIn ? 'Broadcast this play' : 'Login with Nostr to broadcast'}
+          </Button>
 
           {/* Continue Button (if no video) */}
           {!hasVideo && (

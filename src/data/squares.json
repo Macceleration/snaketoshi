@@ -367,7 +367,27 @@
     "reflection": "What do I already know, but have not yet trusted?",
     "video": "https://www.youtube.com/watch?v=T3_bjBgB8h4",
     "snake": null,
-    "ladder": null
+    "ladder": null,
+    "tags": ["wisdom", "discernment", "embodied knowledge"],
+    "marketCycleLabel": "Strategic Patience",
+    "interfaithReferences": [
+      {
+        "tradition": "Christianity",
+        "reference": "Matthew 10:16",
+        "quote": "Be wise as serpents and harmless as doves",
+        "commentary": "Wisdom without predation; harmlessness without naivety."
+      }
+    ],
+    "memeEncounters": [
+      {
+        "caption": "Get out there and meme spiritual enlightenment",
+        "prompt": "Angry man pointing at the mirror with Pepe speaking back."
+      },
+      {
+        "caption": "I guess… make me one with everything.",
+        "prompt": "Disheveled Pepe in line at a hot dog stand with religious figures impatiently standing behind him."
+      }
+    ]
   },
   {
     "number": 38,

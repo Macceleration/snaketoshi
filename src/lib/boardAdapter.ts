@@ -13,6 +13,10 @@ export function squareToTile(square: Square): Tile {
     videoUrl: square.video,
     snakeTo: square.snake,
     ladderTo: square.ladder,
+    tags: square.tags,
+    interfaithReferences: square.interfaithReferences,
+    memeEncounters: square.memeEncounters,
+    marketCycleLabel: square.marketCycleLabel,
   };
 }
 
@@ -29,6 +33,10 @@ export function tileToSquare(tile: Tile): Square {
     video: tile.videoUrl,
     snake: tile.snakeTo,
     ladder: tile.ladderTo,
+    tags: tile.tags,
+    interfaithReferences: tile.interfaithReferences,
+    memeEncounters: tile.memeEncounters,
+    marketCycleLabel: tile.marketCycleLabel,
   };
 }
 
