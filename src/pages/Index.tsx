@@ -26,28 +26,19 @@ const Index = () => {
 
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-8 md:py-16">
-        {/* Logo Placeholder */}
-        <div className="flex justify-center mb-8">
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 dark:from-green-600 dark:via-emerald-700 dark:to-green-800 border-4 border-orange-300 dark:border-orange-700 shadow-2xl flex items-center justify-center">
-            <div className="text-center text-xs md:text-sm font-mono text-white px-2">
-              <div className="mb-1">🐸∞🐍</div>
-              <div className="text-[10px] opacity-80">ouroboros</div>
-            </div>
-          </div>
+        {/* Logo */}
+        <div className="flex justify-center mb-4">
+          <img
+            src="https://blossom.dreamith.to/86c73646c245e98f0f56ef377e35ed811b460add8569595c6631351073cedb66.png"
+            alt="Snaketoshi Squares — The meming of life"
+            className="w-64 h-64 md:w-80 md:h-80 object-contain drop-shadow-2xl"
+          />
         </div>
 
         <div className="text-center max-w-4xl mx-auto mb-16">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-orange-600 via-rose-600 to-purple-600 bg-clip-text text-transparent">
-            Snaketoshi Squares
-          </h1>
-          <p className="text-2xl md:text-3xl text-gray-700 dark:text-gray-300 mb-8 font-medium italic">
-            The meming of life
-          </p>
-          
+          {/* Title visually hidden — shown in the logo image above */}
+          <h1 className="sr-only">Snaketoshi Squares — The meming of life</h1>
           <div className="space-y-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            <p>
-              Life has ups and downs, like the Bitcoin market: <strong className="text-orange-600 dark:text-orange-400">bubbles</strong>, <strong className="text-red-600 dark:text-red-400">busts</strong>, snakes, ladders, lessons, and awakenings.
-            </p>
             <p>
               Maybe the chaos has a board.
             </p>
