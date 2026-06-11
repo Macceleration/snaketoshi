@@ -1,0 +1,722 @@
+[
+  {
+    "number": 1,
+    "title": "Birth",
+    "sanskrit": "Janma",
+    "meaning": "The beginning of the journey. Every soul enters the game.",
+    "reflection": "What am I beginning right now?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 2,
+    "title": "Illusion",
+    "sanskrit": "Maya",
+    "meaning": "The veil of appearances that hides deeper truth.",
+    "reflection": "Where am I mistaking appearance for reality?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 3,
+    "title": "Anger",
+    "sanskrit": "Krodha",
+    "meaning": "The fire that burns without wisdom.",
+    "reflection": "What anger am I holding that no longer serves me?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 4,
+    "title": "Greed",
+    "sanskrit": "Lobha",
+    "meaning": "The endless wanting that is never satisfied.",
+    "reflection": "Where am I grasping instead of receiving?",
+    "video": null,
+    "snake": 1,
+    "ladder": null
+  },
+  {
+    "number": 5,
+    "title": "Physical Plane",
+    "sanskrit": "Bhu Loka",
+    "meaning": "The realm of matter, sensation, and earthly experience.",
+    "reflection": "How am I honoring my body and physical presence?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 6,
+    "title": "Delusion",
+    "sanskrit": "Moha",
+    "meaning": "Attachment to the unreal as if it were real.",
+    "reflection": "What story am I telling myself that isn't true?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 7,
+    "title": "Vanity",
+    "sanskrit": "Mada",
+    "meaning": "Pride that separates us from truth and others.",
+    "reflection": "Where is my ego asking to be seen instead of serving?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 8,
+    "title": "Envy",
+    "sanskrit": "Matsarya",
+    "meaning": "The poison of comparing your inside to another's outside.",
+    "reflection": "Who am I comparing myself to, and why?",
+    "video": null,
+    "snake": 4,
+    "ladder": null
+  },
+  {
+    "number": 9,
+    "title": "Sensual Plane",
+    "sanskrit": "Kama Loka",
+    "meaning": "The realm of desire, pleasure, and earthly attachment.",
+    "reflection": "What am I chasing that I think will complete me?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 10,
+    "title": "Purification",
+    "sanskrit": "Shuddhi",
+    "meaning": "Cleansing of old patterns to reveal what is real.",
+    "reflection": "What old layer am I ready to release?",
+    "video": null,
+    "snake": null,
+    "ladder": 23
+  },
+  {
+    "number": 11,
+    "title": "Entertainment Plane",
+    "sanskrit": "Gandharva Loka",
+    "meaning": "The world of art, music, beauty, and creative expression.",
+    "reflection": "Where can I bring more beauty and play into my life?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 12,
+    "title": "Jealousy",
+    "sanskrit": "Irshya",
+    "meaning": "Fear disguised as possessiveness.",
+    "reflection": "What am I afraid of losing?",
+    "video": null,
+    "snake": 8,
+    "ladder": null
+  },
+  {
+    "number": 13,
+    "title": "Right Action",
+    "sanskrit": "Dharma",
+    "meaning": "Aligned action that serves the whole.",
+    "reflection": "What is mine to do right now?",
+    "video": null,
+    "snake": null,
+    "ladder": 29
+  },
+  {
+    "number": 14,
+    "title": "Astral Plane",
+    "sanskrit": "Bhuvar Loka",
+    "meaning": "The realm of energy, emotion, and subtle perception.",
+    "reflection": "What am I feeling beneath the surface?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 15,
+    "title": "Desire",
+    "sanskrit": "Kama",
+    "meaning": "The longing that moves us toward union or distraction.",
+    "reflection": "Is this desire pulling me closer to truth or further from it?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 16,
+    "title": "Good Tendencies",
+    "sanskrit": "Sukruti",
+    "meaning": "Actions rooted in kindness and clarity.",
+    "reflection": "What good am I doing that I haven't acknowledged?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 17,
+    "title": "Mercy",
+    "sanskrit": "Karuna",
+    "meaning": "Compassion that holds suffering with presence.",
+    "reflection": "Who needs my compassion right now—including myself?",
+    "video": null,
+    "snake": null,
+    "ladder": 69
+  },
+  {
+    "number": 18,
+    "title": "Heavenly Plane",
+    "sanskrit": "Svarga Loka",
+    "meaning": "The realm of joy, light, and temporary bliss.",
+    "reflection": "What brings me joy without clinging?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 19,
+    "title": "Wrong Action",
+    "sanskrit": "Adharma",
+    "meaning": "Action that harms the self or others.",
+    "reflection": "Where have I acted out of alignment?",
+    "video": null,
+    "snake": 7,
+    "ladder": null
+  },
+  {
+    "number": 20,
+    "title": "Discernment",
+    "sanskrit": "Viveka",
+    "meaning": "The capacity to see what is real and what is not.",
+    "reflection": "What truth am I avoiding?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 21,
+    "title": "Selfless Service",
+    "sanskrit": "Seva",
+    "meaning": "Giving without attachment to outcome or recognition.",
+    "reflection": "How can I serve without needing to be seen?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 22,
+    "title": "Mental Plane",
+    "sanskrit": "Mahar Loka",
+    "meaning": "The realm of thought, intellect, and mental clarity.",
+    "reflection": "What thoughts are running my life?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 23,
+    "title": "Good Company",
+    "sanskrit": "Satsang",
+    "meaning": "The mirror of those who reflect truth back to you.",
+    "reflection": "Who in my life helps me see clearly?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 24,
+    "title": "Bad Company",
+    "sanskrit": "Ku-sanga",
+    "meaning": "Relationships that pull you away from your center.",
+    "reflection": "Who or what am I letting influence me unconsciously?",
+    "video": null,
+    "snake": 7,
+    "ladder": null
+  },
+  {
+    "number": 25,
+    "title": "Charity",
+    "sanskrit": "Dana",
+    "meaning": "Generosity of spirit, resources, and presence.",
+    "reflection": "What am I being called to give?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 26,
+    "title": "Piety",
+    "sanskrit": "Bhakti",
+    "meaning": "Devotion to what is sacred and true.",
+    "reflection": "What do I hold as sacred in my life?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 27,
+    "title": "Plane of Austerity",
+    "sanskrit": "Tapar Loka",
+    "meaning": "The realm of discipline, sacrifice, and refinement.",
+    "reflection": "What discipline is shaping me right now?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 28,
+    "title": "Correct Knowledge",
+    "sanskrit": "Satya",
+    "meaning": "Truth that aligns with reality, not belief.",
+    "reflection": "What do I know to be true, beyond opinion?",
+    "video": null,
+    "snake": null,
+    "ladder": 58
+  },
+  {
+    "number": 29,
+    "title": "Neutral Tendencies",
+    "sanskrit": "Samatva",
+    "meaning": "Neither seeking nor avoiding, just present.",
+    "reflection": "Where am I trying too hard to control the outcome?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 30,
+    "title": "Good Karma",
+    "sanskrit": "Punya",
+    "meaning": "The fruit of aligned action.",
+    "reflection": "What harvest am I reaping from past choices?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 31,
+    "title": "Plane of Bliss",
+    "sanskrit": "Jana Loka",
+    "meaning": "The realm of deep peace, stillness, and inner knowing.",
+    "reflection": "When was the last time I felt truly at peace?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 32,
+    "title": "Plane of Balance",
+    "sanskrit": "Mahar Loka",
+    "meaning": "A place of balance, integration, and stabilization before entering deeper self-realization.",
+    "reflection": "Where am I being asked to stabilize my energy before making the next move?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 33,
+    "title": "Plane of Fragrance",
+    "sanskrit": "Gandha Loka",
+    "meaning": "The subtle realm where essence is perceived before form.",
+    "reflection": "What am I sensing before it becomes visible?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 34,
+    "title": "Plane of Taste",
+    "sanskrit": "Rasa Loka",
+    "meaning": "The realm of flavor, preference, and aesthetic discernment.",
+    "reflection": "What is the flavor of my current experience?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 35,
+    "title": "Purgatory",
+    "sanskrit": "Naraka Loka",
+    "meaning": "The underworld of consequence and purification.",
+    "reflection": "What consequence am I facing that I have been avoiding?",
+    "video": null,
+    "snake": 3,
+    "ladder": null
+  },
+  {
+    "number": 36,
+    "title": "Clarity of Consciousness",
+    "sanskrit": "Chitta Shuddhi",
+    "meaning": "The clear mirror of awareness, unstained by thought.",
+    "reflection": "What becomes visible when I stop narrating my experience?",
+    "video": null,
+    "snake": null,
+    "ladder": 62
+  },
+  {
+    "number": 37,
+    "title": "Wisdom",
+    "sanskrit": "Jñāna",
+    "meaning": "Wisdom as embodied knowing. This is not just information, but self-realized action.",
+    "reflection": "What do I already know, but have not yet trusted?",
+    "video": "https://www.youtube.com/watch?v=T3_bjBgB8h4",
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 38,
+    "title": "Plane of Reality",
+    "sanskrit": "Satya Loka",
+    "meaning": "The realm of absolute truth, beyond perception.",
+    "reflection": "What is real when all stories fall away?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 39,
+    "title": "Inner Space",
+    "sanskrit": "Antariksha",
+    "meaning": "The gap between thoughts where presence lives.",
+    "reflection": "Where is the silence in my life?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 40,
+    "title": "Plane of Luminosity",
+    "sanskrit": "Prakasha Loka",
+    "meaning": "The radiant dimension where light is self-aware.",
+    "reflection": "What in me is already awake?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 41,
+    "title": "Cosmic Consciousness",
+    "sanskrit": "Brahma Loka",
+    "meaning": "Union with the infinite field of awareness.",
+    "reflection": "When have I felt most connected to everything?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 42,
+    "title": "Plane of Birth and Rebirth",
+    "sanskrit": "Samsara",
+    "meaning": "The cycle of return, again and again, until freedom.",
+    "reflection": "What pattern keeps repeating in my life?",
+    "video": null,
+    "snake": 22,
+    "ladder": null
+  },
+  {
+    "number": 43,
+    "title": "Humanity",
+    "sanskrit": "Manushya",
+    "meaning": "The beautiful, flawed, holy experience of being human.",
+    "reflection": "Where am I being too hard on myself for being human?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 44,
+    "title": "Ignorance",
+    "sanskrit": "Avidya",
+    "meaning": "Not knowing what you do not know.",
+    "reflection": "What blind spot is becoming visible?",
+    "video": null,
+    "snake": 6,
+    "ladder": null
+  },
+  {
+    "number": 45,
+    "title": "Bad Tendencies",
+    "sanskrit": "Duskruti",
+    "meaning": "Patterns that lead away from wholeness.",
+    "reflection": "What habit am I defending that doesn't serve me?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 46,
+    "title": "Egotism",
+    "sanskrit": "Ahamkara",
+    "meaning": "The false sense of a separate, solid self.",
+    "reflection": "Where am I taking things personally that aren't about me?",
+    "video": null,
+    "snake": 25,
+    "ladder": null
+  },
+  {
+    "number": 47,
+    "title": "Conscience",
+    "sanskrit": "Viveka Buddhi",
+    "meaning": "The inner voice that knows right from wrong.",
+    "reflection": "What is my conscience telling me that I am ignoring?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 48,
+    "title": "Spiritual Devotion",
+    "sanskrit": "Ishvara Pranidhana",
+    "meaning": "Surrender to what is greater than the personal self.",
+    "reflection": "What am I being asked to trust?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 49,
+    "title": "Phenomenal Plane",
+    "sanskrit": "Prakriti Loka",
+    "meaning": "The manifest world of form, change, and appearance.",
+    "reflection": "What am I treating as permanent that is obviously changing?",
+    "video": null,
+    "snake": null,
+    "ladder": 67
+  },
+  {
+    "number": 50,
+    "title": "Fluid Energy",
+    "sanskrit": "Apas Tattva",
+    "meaning": "The water element—flow, adaptability, and emotional depth.",
+    "reflection": "Where do I need to soften and flow instead of resist?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 51,
+    "title": "False Knowledge",
+    "sanskrit": "Mithya Jnana",
+    "meaning": "Believing something untrue to be true.",
+    "reflection": "What 'fact' am I holding that might just be a story?",
+    "video": null,
+    "snake": 16,
+    "ladder": null
+  },
+  {
+    "number": 52,
+    "title": "Plane of Violence",
+    "sanskrit": "Himsa Loka",
+    "meaning": "The realm where harm is inflicted, consciously or not.",
+    "reflection": "Where am I being violent—toward myself or others?",
+    "video": null,
+    "snake": 35,
+    "ladder": null
+  },
+  {
+    "number": 53,
+    "title": "Earth Energy",
+    "sanskrit": "Prithvi Tattva",
+    "meaning": "The grounding element of stability, form, and matter.",
+    "reflection": "How am I grounding myself in the present moment?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 54,
+    "title": "Fire Energy",
+    "sanskrit": "Agni Tattva",
+    "meaning": "The transforming element of heat, digestion, and light.",
+    "reflection": "What in me is being burned away?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 55,
+    "title": "Attachment",
+    "sanskrit": "Raga",
+    "meaning": "The sticky grip of wanting things to stay as they are.",
+    "reflection": "What am I clinging to that wants to leave?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 56,
+    "title": "Air Energy",
+    "sanskrit": "Vayu Tattva",
+    "meaning": "The moving element of breath, wind, and change.",
+    "reflection": "What new wind is blowing through my life?",
+    "video": null,
+    "snake": 32,
+    "ladder": null
+  },
+  {
+    "number": 57,
+    "title": "Ether",
+    "sanskrit": "Akasha Tattva",
+    "meaning": "The spacious element that holds all other elements.",
+    "reflection": "Where do I need more space in my life?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 58,
+    "title": "Supreme Energy",
+    "sanskrit": "Shiva Tattva",
+    "meaning": "The unchanging awareness beneath all experience.",
+    "reflection": "What in me has never changed?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 59,
+    "title": "Absolute Self",
+    "sanskrit": "Atman",
+    "meaning": "The true self, beyond body, mind, and identity.",
+    "reflection": "Who am I when no one is looking?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 60,
+    "title": "Plane of Primal Vibration",
+    "sanskrit": "Nada Loka",
+    "meaning": "The realm of sound, frequency, and the creative word.",
+    "reflection": "What is the sound of my soul right now?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 61,
+    "title": "Primal Vibration",
+    "sanskrit": "Om",
+    "meaning": "The first sound, the cosmic hum, the resonance of all that is.",
+    "reflection": "When I sit in silence, what vibration do I feel?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 62,
+    "title": "Supreme Bliss",
+    "sanskrit": "Ananda",
+    "meaning": "The bliss that is not dependent on anything external.",
+    "reflection": "When was the last time I felt joy for no reason?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 63,
+    "title": "Plane of the Dark Night",
+    "sanskrit": "Tamas Loka",
+    "meaning": "The underworld journey where light is temporarily hidden.",
+    "reflection": "What darkness am I afraid to sit with?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 64,
+    "title": "Plane of Non-Duality",
+    "sanskrit": "Advaita Loka",
+    "meaning": "The realm where separation dissolves into oneness.",
+    "reflection": "Where am I creating a boundary that doesn't exist?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 65,
+    "title": "Void",
+    "sanskrit": "Shunya",
+    "meaning": "Emptiness that is full, the ground of all form.",
+    "reflection": "What happens when I stop filling the silence?",
+    "video": null,
+    "snake": 52,
+    "ladder": null
+  },
+  {
+    "number": 66,
+    "title": "Plane of Renunciation",
+    "sanskrit": "Vairagya Loka",
+    "meaning": "The realm of letting go without aversion.",
+    "reflection": "What am I ready to release with love?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 67,
+    "title": "Reality",
+    "sanskrit": "Sat",
+    "meaning": "That which is, always has been, and always will be.",
+    "reflection": "What is here that cannot be taken away?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 68,
+    "title": "Cosmic Good",
+    "sanskrit": "Param Kalyana",
+    "meaning": "The goodness woven into the fabric of existence.",
+    "reflection": "Where can I trust that life is supporting me?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 69,
+    "title": "Absolute Truth",
+    "sanskrit": "Paramartha",
+    "meaning": "The truth beyond all relative truths.",
+    "reflection": "What do I know that cannot be argued with?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 70,
+    "title": "Plane of Saturation",
+    "sanskrit": "Paripurna Loka",
+    "meaning": "The fullness where nothing more is needed.",
+    "reflection": "Where am I already complete?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 71,
+    "title": "Universal Consciousness",
+    "sanskrit": "Vishva Chetana",
+    "meaning": "Awareness that includes all beings, all worlds, all experience.",
+    "reflection": "What would I do if I knew we are all one?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  },
+  {
+    "number": 72,
+    "title": "Liberation",
+    "sanskrit": "Moksha",
+    "meaning": "Freedom from the game. You have arrived.",
+    "reflection": "What does it feel like to be free?",
+    "video": null,
+    "snake": null,
+    "ladder": null
+  }
+]
