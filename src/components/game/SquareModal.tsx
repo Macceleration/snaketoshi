@@ -1,9 +1,15 @@
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Play, SkipForward, ArrowDown, ArrowUp, Radio } from 'lucide-react';
-import type { Square } from '@/types/game';
+import type { Square, Player, Board } from '@/types/game';
 import { extractYouTubeId, createEmbedUrl } from '@/lib/youtube';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useNostrPublish } from '@/hooks/useNostrPublish';
+import { useToast } from '@/hooks/useToast';
+import { createPlayBroadcastEvent } from '@/lib/nostrEvents';
+import { squareToTile } from '@/lib/boardAdapter';
 
 interface SquareModalProps {
   square: Square;
@@ -12,6 +18,16 @@ interface SquareModalProps {
   onShowVideo: () => void;
   onSkipVideo: () => void;
   onClose: () => void;
+  // Optional props for broadcasting
+  currentPlayer?: Player;
+  roll?: number;
+  transition?: {
+    type: 'snake' | 'ladder';
+    from: number;
+    to: number;
+  };
+  board?: Board;
+  roomId?: string;
 }
 
 export function SquareModal({
@@ -21,6 +37,11 @@ export function SquareModal({
   onShowVideo,
   onSkipVideo,
   onClose,
+  currentPlayer,
+  roll,
+  transition,
+  board,
+  roomId,
 }: SquareModalProps) {
   const hasVideo = square.video !== null;
   const hasSnake = square.snake !== null;
@@ -31,8 +52,60 @@ export function SquareModal({
   const videoId = hasVideo && square.video ? extractYouTubeId(square.video) : null;
   const embedUrl = videoId ? createEmbedUrl(videoId, true) : null;
 
-  // TODO: Get from user context when Nostr login is implemented
-  const isLoggedIn = false;
+  const { user } = useCurrentUser();
+  const { mutate: publish, isPending } = useNostrPublish();
+  const { toast } = useToast();
+  const [isBroadcasting, setIsBroadcasting] = useState(false);
+
+  const handleBroadcast = () => {
+    if (!user) {
+      toast({
+        title: 'Login required',
+        description: 'Please login with Nostr to broadcast your plays',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!currentPlayer || !roll || !board) {
+      toast({
+        title: 'Cannot broadcast',
+        description: 'Missing game state information',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsBroadcasting(true);
+
+    const tile = squareToTile(square);
+    const eventTemplate = createPlayBroadcastEvent({
+      player: currentPlayer,
+      tile,
+      roll,
+      transition,
+      board,
+      roomId,
+    });
+
+    publish(eventTemplate, {
+      onSuccess: () => {
+        toast({
+          title: 'Broadcasted! 🐸',
+          description: 'Your play has been shared to Nostr',
+        });
+        setIsBroadcasting(false);
+      },
+      onError: (error) => {
+        toast({
+          title: 'Broadcast failed',
+          description: error.message || 'Could not publish to Nostr',
+          variant: 'destructive',
+        });
+        setIsBroadcasting(false);
+      },
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -215,13 +288,18 @@ export function SquareModal({
 
           {/* Broadcast Button */}
           <Button
-            disabled={!isLoggedIn}
+            onClick={handleBroadcast}
+            disabled={!user || isBroadcasting || isPending}
             variant="outline"
             className="w-full"
             size="lg"
           >
             <Radio className="w-5 h-5 mr-2" />
-            {isLoggedIn ? 'Broadcast this play' : 'Login with Nostr to broadcast'}
+            {!user 
+              ? 'Login with Nostr to broadcast' 
+              : isBroadcasting || isPending
+              ? 'Broadcasting...'
+              : 'Broadcast this play'}
           </Button>
 
           {/* Continue Button (if no video) */}

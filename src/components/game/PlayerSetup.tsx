@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Minus, Play, Copy, Check } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Plus, Minus, Play, Copy, Check, User } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 interface PlayerSetupProps {
   mode: string;
@@ -15,7 +17,24 @@ interface PlayerSetupProps {
 export function PlayerSetup({ mode, roomId, onStart }: PlayerSetupProps) {
   const [playerNames, setPlayerNames] = useState<string[]>(['Player 1']);
   const [copied, setCopied] = useState(false);
+  const [useNostrProfile, setUseNostrProfile] = useState(false);
   const { toast } = useToast();
+  const { user, metadata } = useCurrentUser();
+
+  // Update first player name if using Nostr profile
+  useEffect(() => {
+    if (useNostrProfile && user && metadata) {
+      const displayName = metadata.display_name || metadata.name || 'Anon';
+      const newNames = [...playerNames];
+      newNames[0] = displayName;
+      setPlayerNames(newNames);
+    } else if (!useNostrProfile && playerNames[0] !== 'Player 1') {
+      // Reset to default if unchecking
+      const newNames = [...playerNames];
+      newNames[0] = 'Player 1';
+      setPlayerNames(newNames);
+    }
+  }, [useNostrProfile, user, metadata]);
 
   const handleAddPlayer = () => {
     if (playerNames.length < 6) {
@@ -104,6 +123,33 @@ export function PlayerSetup({ mode, roomId, onStart }: PlayerSetupProps) {
             </div>
           )}
 
+          {/* Nostr Profile Option */}
+          {user && (
+            <div className="p-4 bg-violet-50 dark:bg-violet-950 rounded-lg border-2 border-violet-200 dark:border-violet-800">
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="use-nostr"
+                  checked={useNostrProfile}
+                  onCheckedChange={(checked) => setUseNostrProfile(checked as boolean)}
+                />
+                <div className="flex-1">
+                  <Label
+                    htmlFor="use-nostr"
+                    className="text-sm font-semibold cursor-pointer flex items-center gap-2"
+                  >
+                    <User className="w-4 h-4" />
+                    Use my Nostr profile as player
+                  </Label>
+                  {metadata && (
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      Playing as: {metadata.display_name || metadata.name || 'Anon'}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Player Names */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">
@@ -122,6 +168,7 @@ export function PlayerSetup({ mode, roomId, onStart }: PlayerSetupProps) {
                   onChange={(e) => handleNameChange(index, e.target.value)}
                   placeholder={`Player ${index + 1} name`}
                   className="flex-1"
+                  disabled={index === 0 && useNostrProfile}
                 />
               </div>
             ))}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dices, Users, Play, LogIn, Map } from 'lucide-react';
+import { LoginArea } from '@/components/auth/LoginArea';
 
 const Index = () => {
   useSeoMeta({
@@ -12,8 +13,15 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-gray-900 dark:via-orange-950 dark:to-gray-900">
+      {/* Header with Login */}
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex justify-end">
+          <LoginArea className="max-w-60" />
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-12 md:py-20">
+      <div className="container mx-auto px-4 py-8 md:py-16">
         {/* Logo Placeholder */}
         <div className="flex justify-center mb-8">
           <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 dark:from-green-600 dark:via-emerald-700 dark:to-green-800 border-4 border-orange-300 dark:border-orange-700 shadow-2xl flex items-center justify-center">
