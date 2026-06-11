@@ -90,6 +90,9 @@ const Index = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Start a game and share the link
                 </p>
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                  (Same-browser only for now)
+                </p>
               </CardContent>
             </Card>
           </Link>
@@ -109,6 +112,9 @@ const Index = () => {
             <CardContent className="pt-0">
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Enter a room code to join friends
+              </p>
+              <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                (Same-browser only for now)
               </p>
             </CardContent>
           </Card>

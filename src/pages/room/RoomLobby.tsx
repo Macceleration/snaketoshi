@@ -155,6 +155,19 @@ export function RoomLobby() {
         </div>
 
         <div className="max-w-4xl mx-auto space-y-6">
+          {/* Alpha Warning */}
+          <Card className="border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950">
+            <CardContent className="py-4">
+              <p className="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-2">
+                ⚠️ Same-Browser Multiplayer (Alpha)
+              </p>
+              <p className="text-sm text-amber-800 dark:text-amber-300">
+                To test multiplayer, open this join link in <strong>another tab</strong> on <strong>this same device/browser</strong>. 
+                Cross-device multiplayer requires a backend server (coming soon).
+              </p>
+            </CardContent>
+          </Card>
+
           {/* Room Info Card */}
           <Card className="border-2 shadow-xl">
             <CardHeader>

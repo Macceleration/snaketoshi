@@ -105,6 +105,18 @@ export function CreateRoom() {
             </CardHeader>
 
             <CardContent className="space-y-6">
+              {/* Alpha Warning */}
+              <div className="p-4 bg-amber-50 dark:bg-amber-950 rounded-lg border-2 border-amber-300 dark:border-amber-700">
+                <p className="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-1">
+                  ⚠️ Same-Browser Only (Alpha)
+                </p>
+                <p className="text-xs text-amber-800 dark:text-amber-300">
+                  Currently works for multiple tabs in the <strong>same browser</strong> only. 
+                  Players must open the join link in another tab on <strong>this device</strong>.
+                  Cross-device multiplayer coming soon!
+                </p>
+              </div>
+
               {/* Nostr Profile Option */}
               {user && (
                 <div className="p-4 bg-violet-50 dark:bg-violet-950 rounded-lg border-2 border-violet-200 dark:border-violet-800">
