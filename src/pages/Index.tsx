@@ -55,7 +55,7 @@ const Index = () => {
 
         {/* Action Buttons Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto mb-12">
-          <Link to="/play?mode=single" className="block">
+          <Link to="/play/local?mode=single" className="block">
             <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-orange-400 cursor-pointer h-full">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
@@ -73,7 +73,7 @@ const Index = () => {
             </Card>
           </Link>
 
-          <Link to="/play?mode=multiplayer" className="block">
+          <Link to="/room/create" className="block">
             <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-purple-400 cursor-pointer h-full">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
