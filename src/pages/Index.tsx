@@ -40,6 +40,9 @@ const Index = () => {
           <h1 className="sr-only">Snaketoshi Squares — The meming of life</h1>
           <div className="space-y-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             <p>
+              Life has ups and downs, like the Bitcoin market: <strong className="text-orange-600 dark:text-orange-400">bubbles</strong>, <strong className="text-red-600 dark:text-red-400">busts</strong>, snakes, ladders, lessons, and awakenings.
+            </p>
+            <p>
               Maybe the chaos has a board.
             </p>
             <p className="text-sm">
