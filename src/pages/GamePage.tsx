@@ -9,8 +9,16 @@ import { PlayerSetup } from '@/components/game/PlayerSetup';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Users } from 'lucide-react';
-import type { Player, GameLog, Square } from '@/types/game';
+import type { Player, GameState, Square } from '@/types/game';
 import squaresData from '@/data/squares.json';
+import { 
+  createGameState, 
+  applyRoll, 
+  advanceTurn, 
+  applyTransition,
+  getCurrentPlayer 
+} from '@/lib/gameEngine';
+import { createBoardFromSquares, getBoardSquares } from '@/lib/boardAdapter';
 
 const PLAYER_COLORS = [
   '#ef4444', // red
@@ -33,86 +41,66 @@ export function GamePage() {
   });
 
   const [gameStarted, setGameStarted] = useState(false);
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-  const [gameLog, setGameLog] = useState<GameLog[]>([]);
+  const [gameState, setGameState] = useState<GameState | null>(null);
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [isRolling, setIsRolling] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
 
+  // Convert legacy squares data to board
   const squares = squaresData as Square[];
-  const currentPlayer = players[currentPlayerIndex];
+  const board = createBoardFromSquares(squares);
+  
+  const currentPlayer = gameState ? getCurrentPlayer(gameState) : undefined;
 
   const handleStartGame = (playerNames: string[]) => {
-    const newPlayers: Player[] = playerNames.map((name, index) => ({
+    const players: Player[] = playerNames.map((name, index) => ({
       id: `player-${index}`,
       name,
       color: PLAYER_COLORS[index % PLAYER_COLORS.length],
       position: 0,
     }));
-    setPlayers(newPlayers);
+    
+    const newGameState = createGameState(players, {
+      roomId: roomId || undefined,
+      isMultiplayer: mode === 'multiplayer',
+    });
+    
+    setGameState(newGameState);
     setGameStarted(true);
   };
 
   const handleRoll = (roll: number) => {
-    if (!currentPlayer || isRolling) return;
+    if (!gameState || !currentPlayer || isRolling) return;
     
     setIsRolling(true);
     
-    const fromSquare = currentPlayer.position;
-    let toSquare = Math.min(fromSquare + roll, 72);
-    
-    // Update player position
-    const updatedPlayers = players.map(p =>
-      p.id === currentPlayer.id ? { ...p, position: toSquare } : p
-    );
-    setPlayers(updatedPlayers);
-
-    // Check for snake or ladder
-    const landedSquare = squares.find(s => s.number === toSquare);
-    let finalSquare = toSquare;
-    let hasSnake = false;
-    let hasLadder = false;
-
-    if (landedSquare) {
-      if (landedSquare.snake !== null) {
-        finalSquare = landedSquare.snake;
-        hasSnake = true;
-      } else if (landedSquare.ladder !== null) {
-        finalSquare = landedSquare.ladder;
-        hasLadder = true;
+    try {
+      // Apply the roll using game engine
+      const result = applyRoll(gameState, board, roll);
+      
+      // Update game state
+      setGameState(result.updatedState);
+      
+      // Find the square for the modal
+      const landedSquare = squares.find(s => s.number === result.event.toSquare);
+      if (landedSquare) {
+        setSelectedSquare(landedSquare);
+        setShowVideo(false);
       }
-
-      // Apply snake or ladder after a delay
-      if (hasSnake || hasLadder) {
+      
+      // Apply snake/ladder transition after delay if needed
+      if (result.transition) {
         setTimeout(() => {
-          const updatedPlayersWithMove = updatedPlayers.map(p =>
-            p.id === currentPlayer.id ? { ...p, position: finalSquare } : p
-          );
-          setPlayers(updatedPlayersWithMove);
+          setGameState(prevState => {
+            if (!prevState) return prevState;
+            return applyTransition(prevState, currentPlayer.id, result.transition!.to);
+          });
         }, 1500);
       }
-
-      // Show square modal
-      setSelectedSquare(landedSquare);
-      setShowVideo(false);
+    } catch (error) {
+      console.error('Error applying roll:', error);
     }
-
-    // Add to log
-    const logEntry: GameLog = {
-      id: `log-${Date.now()}`,
-      playerId: currentPlayer.id,
-      playerName: currentPlayer.name,
-      roll,
-      fromSquare,
-      toSquare,
-      finalSquare: (hasSnake || hasLadder) ? finalSquare : undefined,
-      hasSnake,
-      hasLadder,
-      timestamp: Date.now(),
-    };
-    setGameLog([logEntry, ...gameLog]);
-
+    
     setIsRolling(false);
   };
 
@@ -120,17 +108,18 @@ export function GamePage() {
     setSelectedSquare(null);
     setShowVideo(false);
     
+    if (!gameState || !currentPlayer) return;
+    
     // Check for winner
-    if (currentPlayer.position >= 72) {
-      // Winner!
+    if (gameState.winner) {
       setTimeout(() => {
         alert(`🎉 ${currentPlayer.name} has achieved Moksha! Liberation is yours.`);
       }, 500);
       return;
     }
 
-    // Next player's turn
-    setCurrentPlayerIndex((currentPlayerIndex + 1) % players.length);
+    // Advance to next player's turn
+    setGameState(advanceTurn(gameState));
   };
 
   if (!gameStarted) {
@@ -155,6 +144,8 @@ export function GamePage() {
       </div>
     );
   }
+
+  if (!gameState) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-gray-900 dark:via-orange-950 dark:to-gray-900">
@@ -189,7 +180,7 @@ export function GamePage() {
           <div className="space-y-4">
             <GameBoard
               squares={squares}
-              players={players}
+              players={gameState.players}
               currentPlayerId={currentPlayer?.id}
             />
           </div>
@@ -203,8 +194,8 @@ export function GamePage() {
             />
             
             <GameLogComponent
-              log={gameLog}
-              players={players}
+              log={gameState.events}
+              players={gameState.players}
             />
           </div>
         </div>

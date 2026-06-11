@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Play, SkipForward, ArrowDown, ArrowUp } from 'lucide-react';
 import type { Square } from '@/types/game';
+import { extractYouTubeId, createEmbedUrl } from '@/lib/youtube';
 
 interface SquareModalProps {
   square: Square;
@@ -25,13 +26,8 @@ export function SquareModal({
   const hasSnake = square.snake !== null;
   const hasLadder = square.ladder !== null;
 
-  // Extract YouTube video ID from URL
-  const getYouTubeId = (url: string) => {
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-    return match ? match[1] : null;
-  };
-
-  const videoId = hasVideo && square.video ? getYouTubeId(square.video) : null;
+  const videoId = hasVideo && square.video ? extractYouTubeId(square.video) : null;
+  const embedUrl = videoId ? createEmbedUrl(videoId, true) : null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -127,12 +123,12 @@ export function SquareModal({
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {videoId && (
+                  {embedUrl && (
                     <div className="aspect-video rounded-lg overflow-hidden bg-black">
                       <iframe
                         width="100%"
                         height="100%"
-                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                        src={embedUrl}
                         title={square.title}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

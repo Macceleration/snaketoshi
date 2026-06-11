@@ -1,6 +1,8 @@
 import { Card } from '@/components/ui/card';
 import type { Square, Player } from '@/types/game';
 import { ArrowDown, ArrowUp } from 'lucide-react';
+import { layoutBoard } from '@/lib/boardLayout';
+import { squareToTile, tileToSquare } from '@/lib/boardAdapter';
 
 interface GameBoardProps {
   squares: Square[];
@@ -9,23 +11,12 @@ interface GameBoardProps {
 }
 
 export function GameBoard({ squares, players, currentPlayerId }: GameBoardProps) {
-  // Board is 8 rows x 9 columns (72 squares)
-  // Bottom row goes left to right (1-9)
-  // Next row goes right to left (10-18)
-  // Alternating pattern (snake-like path)
+  // Convert squares to tiles and layout the board
+  const tiles = squares.map(squareToTile);
+  const rows = layoutBoard(tiles);
   
-  const rows: Square[][] = [];
-  for (let row = 0; row < 8; row++) {
-    const rowSquares: Square[] = [];
-    const start = row * 9;
-    for (let col = 0; col < 9; col++) {
-      const index = row % 2 === 0 ? start + col : start + (8 - col);
-      if (squares[index]) {
-        rowSquares.push(squares[index]);
-      }
-    }
-    rows.unshift(rowSquares); // Reverse so bottom row is first
-  }
+  // Convert back to squares for rendering (backward compatibility)
+  const rowsAsSquares = rows.map(row => row.map(tileToSquare));
 
   const getPlayersOnSquare = (squareNumber: number) => {
     return players.filter(p => p.position === squareNumber);
@@ -51,7 +42,7 @@ export function GameBoard({ squares, players, currentPlayerId }: GameBoardProps)
     <div className="w-full">
       <Card className="p-2 md:p-4 bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 dark:from-gray-800 dark:via-orange-900 dark:to-gray-800 border-4 border-amber-300 dark:border-amber-700 shadow-2xl">
         <div className="space-y-1 md:space-y-2">
-          {rows.map((row, rowIndex) => (
+          {rowsAsSquares.map((row, rowIndex) => (
             <div key={rowIndex} className="flex gap-1 md:gap-2">
               {row.map((square) => {
                 const squarePlayers = getPlayersOnSquare(square.number);
