@@ -51,8 +51,7 @@ export function JoinRoomDialog({ isOpen, onClose }: JoinRoomDialogProps) {
       const adapter = getRoomAdapter();
       
       // Find room by code
-      const rooms = Array.from((adapter as any).rooms.values());
-      const room = rooms.find((r: any) => r.code === code);
+      const room = await adapter.getRoomByCode(code);
       
       if (!room) {
         toast({

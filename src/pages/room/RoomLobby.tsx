@@ -210,20 +210,23 @@ export function RoomLobby() {
                 {/* QR Code */}
                 {qrDataUrl && (
                   <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border-2">
-                    <p className="text-sm font-semibold mb-3">Scan to Join</p>
+                    <p className="text-sm font-semibold mb-3">Open in Another Tab</p>
                     <img src={qrDataUrl} alt="Room QR Code" className="mx-auto w-48 h-48" />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Scan with same browser on this device
+                    </p>
                   </div>
                 )}
 
                 {/* Join Link */}
                 <div className="flex flex-col justify-center p-4 bg-white dark:bg-gray-800 rounded-lg border-2">
-                  <p className="text-sm font-semibold mb-3">Or share link:</p>
+                  <p className="text-sm font-semibold mb-3">Share Link/Code:</p>
                   <Button onClick={handleCopyLink} variant="outline" className="w-full">
                     <Copy className="w-4 h-4 mr-2" />
                     Copy Join Link
                   </Button>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 break-all">
-                    {window.location.origin}/room/{roomId}/join
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Open in another tab on this browser
                   </p>
                 </div>
               </div>

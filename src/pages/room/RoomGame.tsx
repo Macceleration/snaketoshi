@@ -11,7 +11,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Users } from 'lucide-react';
 import { LoginArea } from '@/components/auth/LoginArea';
 import { useToast } from '@/hooks/useToast';
-import type { GameRoom, Square } from '@/types/game';
+import type { Square } from '@/types/game';
+import type { GameRoom } from '@/types/room';
 import squaresData from '@/data/squares.json';
 import { getRoomAdapter } from '@/lib/roomAdapter';
 import { createBoardFromSquares } from '@/lib/boardAdapter';
@@ -29,6 +30,7 @@ export function RoomGame() {
   const [currentPlayerId, setCurrentPlayerId] = useState<string>('');
   const [lastRoll, setLastRoll] = useState<number | undefined>();
   const [lastTransition, setLastTransition] = useState<{ type: 'snake' | 'ladder'; from: number; to: number } | undefined>();
+  const [lastSeenEventId, setLastSeenEventId] = useState<string>('');
 
   const squares = squaresData as Square[];
   const board = createBoardFromSquares(squares);
@@ -69,24 +71,29 @@ export function RoomGame() {
     const unsubscribe = adapter.subscribeToRoom(roomId, (updatedRoom) => {
       setRoom(updatedRoom);
 
-      // Check if we need to show square modal for latest event
-      if (updatedRoom.gameState) {
-        const latestEvent = updatedRoom.gameState.events[0];
-        if (latestEvent && !selectedSquare) {
-          const square = squares.find(s => s.number === latestEvent.toSquare);
-          if (square) {
-            setSelectedSquare(square);
-            setShowVideo(false);
-            setLastRoll(latestEvent.roll);
-            setLastTransition(
-              latestEvent.hasSnake || latestEvent.hasLadder
-                ? {
-                    type: latestEvent.hasSnake ? 'snake' : 'ladder',
-                    from: latestEvent.toSquare,
-                    to: latestEvent.finalSquare!,
-                  }
-                : undefined
-            );
+      // Show modal when entering encounter phase with new event
+      if (updatedRoom.gameState && updatedRoom.gameState.phase === 'encounter') {
+        const pendingEventId = updatedRoom.gameState.pendingEventId;
+        
+        if (pendingEventId && pendingEventId !== lastSeenEventId) {
+          const latestEvent = updatedRoom.gameState.events[0];
+          if (latestEvent && latestEvent.id === pendingEventId) {
+            const square = squares.find(s => s.number === latestEvent.toSquare);
+            if (square) {
+              setSelectedSquare(square);
+              setShowVideo(false);
+              setLastRoll(latestEvent.roll);
+              setLastTransition(
+                latestEvent.hasSnake || latestEvent.hasLadder
+                  ? {
+                      type: latestEvent.hasSnake ? 'snake' : 'ladder',
+                      from: latestEvent.toSquare,
+                      to: latestEvent.finalSquare!,
+                    }
+                  : undefined
+              );
+              setLastSeenEventId(pendingEventId);
+            }
           }
         }
       }
@@ -110,11 +117,28 @@ export function RoomGame() {
     }
   };
 
-  const handleCloseModal = () => {
+  const handleCloseModal = async () => {
     setSelectedSquare(null);
     setShowVideo(false);
 
-    if (room?.gameState?.winner) {
+    if (!roomId || !room || !room.gameState) return;
+
+    // If in encounter phase, continue the turn
+    if (room.gameState.phase === 'encounter') {
+      try {
+        await getRoomAdapter().continueTurn(roomId, currentPlayerId);
+        // Room will update via subscription
+      } catch (error) {
+        toast({
+          title: 'Continue failed',
+          description: error instanceof Error ? error.message : 'Unknown error',
+          variant: 'destructive',
+        });
+      }
+    }
+
+    // Show winner message if game completed
+    if (room.gameState.winner) {
       const winner = room.players.find(p => p.id === room.gameState?.winner);
       setTimeout(() => {
         toast({

@@ -80,6 +80,9 @@ export interface GameEvent {
 // Legacy GameLog type (alias for backward compatibility)
 export type GameLog = GameEvent;
 
+// Game phase for turn management
+export type GamePhase = 'awaiting_roll' | 'encounter' | 'complete';
+
 // Complete game state
 export interface GameState {
   players: Player[];
@@ -88,6 +91,13 @@ export interface GameState {
   roomId?: string;
   isMultiplayer: boolean;
   winner?: string; // player id of winner
+  phase?: GamePhase; // Current phase of the turn
+  pendingTransition?: {
+    type: 'snake' | 'ladder';
+    from: number;
+    to: number;
+  };
+  pendingEventId?: string; // ID of the event awaiting acknowledgment
 }
 
 // Room info for multiplayer

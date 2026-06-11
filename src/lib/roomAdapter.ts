@@ -226,6 +226,9 @@ export class LocalRoomAdapter implements RoomAdapter {
       isMultiplayer: true,
     });
 
+    // Set initial phase
+    gameState.phase = 'awaiting_roll';
+
     room.gameState = gameState;
     room.status = 'active';
     room.startedAt = Date.now();
@@ -248,6 +251,11 @@ export class LocalRoomAdapter implements RoomAdapter {
       throw new Error('Game state not initialized');
     }
 
+    // Verify phase
+    if (room.gameState.phase !== 'awaiting_roll') {
+      throw new Error('Not in roll phase');
+    }
+
     // Verify it's this player's turn
     const currentPlayer = room.gameState.players[room.gameState.currentPlayerIndex];
     if (currentPlayer.id !== playerId) {
@@ -260,11 +268,82 @@ export class LocalRoomAdapter implements RoomAdapter {
 
     // Update game state
     room.gameState = result.updatedState;
+    
+    // Enter encounter phase
+    room.gameState.phase = 'encounter';
+    room.gameState.pendingEventId = result.event.id;
+    
+    // Store pending transition if exists
+    if (result.transition) {
+      room.gameState.pendingTransition = result.transition;
+    }
 
-    // Check for winner
-    if (result.updatedState.winner) {
+    this.updateRoom(room);
+    return room;
+  }
+
+  async continueTurn(roomId: string, playerId: string): Promise<GameRoom> {
+    const room = this.rooms.get(roomId);
+    if (!room) {
+      throw new Error('Room not found');
+    }
+
+    if (room.status !== 'active') {
+      throw new Error('Game not active');
+    }
+
+    if (!room.gameState) {
+      throw new Error('Game state not initialized');
+    }
+
+    // Verify phase
+    if (room.gameState.phase !== 'encounter') {
+      throw new Error('Not in encounter phase');
+    }
+
+    // Verify it's this player's turn
+    const currentPlayer = room.gameState.players[room.gameState.currentPlayerIndex];
+    if (currentPlayer.id !== playerId) {
+      throw new Error('Not your turn');
+    }
+
+    // Apply pending transition if exists
+    if (room.gameState.pendingTransition) {
+      const { to } = room.gameState.pendingTransition;
+      room.gameState.players = room.gameState.players.map(p =>
+        p.id === currentPlayer.id ? { ...p, position: to } : p
+      );
+      
+      // Check for winner after transition
+      if (to >= 72) {
+        room.gameState.winner = currentPlayer.id;
+        room.gameState.phase = 'complete';
+        room.status = 'complete';
+        room.completedAt = Date.now();
+        
+        // Clear pending state
+        delete room.gameState.pendingTransition;
+        delete room.gameState.pendingEventId;
+        
+        this.updateRoom(room);
+        return room;
+      }
+      
+      delete room.gameState.pendingTransition;
+    }
+
+    delete room.gameState.pendingEventId;
+
+    // Check if game is complete
+    if (room.gameState.winner) {
+      room.gameState.phase = 'complete';
       room.status = 'complete';
       room.completedAt = Date.now();
+    } else {
+      // Advance turn
+      room.gameState.currentPlayerIndex = 
+        (room.gameState.currentPlayerIndex + 1) % room.gameState.players.length;
+      room.gameState.phase = 'awaiting_roll';
     }
 
     this.updateRoom(room);
@@ -273,6 +352,11 @@ export class LocalRoomAdapter implements RoomAdapter {
 
   async getRoom(roomId: string): Promise<GameRoom | null> {
     return this.rooms.get(roomId) || null;
+  }
+
+  async getRoomByCode(code: string): Promise<GameRoom | null> {
+    const rooms = Array.from(this.rooms.values());
+    return rooms.find(r => r.code === code) || null;
   }
 
   subscribeToRoom(roomId: string, callback: RoomSubscriptionCallback): () => void {

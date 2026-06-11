@@ -250,13 +250,13 @@ export function SquareModal({
                     Play Video
                   </Button>
                   <Button
-                    onClick={onSkipVideo}
+                    onClick={onClose}
                     variant="outline"
                     className="flex-1"
                     size="lg"
                   >
                     <SkipForward className="w-5 h-5 mr-2" />
-                    Skip Video
+                    Continue Without Video
                   </Button>
                 </div>
               ) : (

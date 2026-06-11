@@ -90,13 +90,25 @@ export interface RoomAdapter {
 
   /**
    * Submit a dice roll (current player only)
+   * Enters 'encounter' phase
    */
   submitRoll(roomId: string, playerId: string, roll: number): Promise<GameRoom>;
+
+  /**
+   * Continue turn after encounter
+   * Applies snake/ladder transition and advances turn
+   */
+  continueTurn(roomId: string, playerId: string): Promise<GameRoom>;
 
   /**
    * Get current room state
    */
   getRoom(roomId: string): Promise<GameRoom | null>;
+
+  /**
+   * Get room by code
+   */
+  getRoomByCode(code: string): Promise<GameRoom | null>;
 
   /**
    * Subscribe to room updates
